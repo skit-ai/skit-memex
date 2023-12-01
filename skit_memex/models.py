@@ -36,3 +36,18 @@ def image_to_explanation(oai_client, image_path: str) -> str:
     )
 
     return response.choices[0].message.content
+
+def meme_recommender(oai_client, text: str):
+
+    response = oai_client.chat.completions.create(
+        model = "gpt-3.5-turbo",
+        messages=[
+                {"role": "system", "content": "You are a meme assistant. \
+                    Consider the text input provided,recommend the name of a \
+                    common meme that could be associated with the message"}
+                {"role": "user", "content": text}
+        ],
+        response_format={ "type": "json_object" }
+    )
+
+    return response.choices[0].message
