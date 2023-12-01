@@ -44,7 +44,7 @@ def meme_recommender(oai_client, text: str):
         messages=[
                 {"role": "system", "content": "You are a meme assistant. \
                     Consider the text input provided,recommend the name of a \
-                    common meme that could be associated with the message"}
+                    common meme that could be associated with the message"},
                 {"role": "user", "content": text}
         ],
         response_format={ "type": "json_object" }
