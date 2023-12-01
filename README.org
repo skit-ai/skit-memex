@@ -1,3 +1,11 @@
 #+TITLE: skit-memex
 
-Meme explainer for us plebs.
+Meme explainer for plebs. You will need the following set up:
+
++ Slack app
+  + ~SLACK_BOT_TOKEN~ var with ~channels:history~, ~chat:write~, and ~files:read~ scopes.
+  + ~SLACK_APP_TOKEN~ app level token with socket enabled.
+  + Event API subscription for ~message.channels~.
++ ~OPENAI_API_KEY~ with GPT4V access.
+
+Add the app in a channel, execute ~poetry run memex~, and post images.
