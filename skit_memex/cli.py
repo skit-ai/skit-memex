@@ -96,9 +96,8 @@ def generate():
    }
 
    response = requests.post('https://api.imgflip.com/caption_image', headers=headers, data=data)
-   resp = response.json()
-
-   print(resp)
+   resp = response.json()['data']['url']
+   return resp
 
 if __name__ == "__main__":
     generate()
