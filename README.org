@@ -1,6 +1,12 @@
 #+TITLE: skit-memex
 
-Meme explainer for plebs. You will need the following set up:
++ One stop shop for all your meme needs
+    + Explain memes for plebs
+    + Translate memes for cross border normies
+    + Recommend memes for chads
+
+
+You will need the following set up:
 
 + Slack app
   + ~SLACK_BOT_TOKEN~ var with ~channels:history~, ~chat:write~, and ~files:read~ scopes.
