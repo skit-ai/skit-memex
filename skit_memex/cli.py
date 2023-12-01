@@ -3,13 +3,14 @@ import tempfile
 from threading import Event
 
 import requests
+import json
 from openai import OpenAI
 from slack_sdk.socket_mode import SocketModeClient
 from slack_sdk.socket_mode.request import SocketModeRequest
 from slack_sdk.socket_mode.response import SocketModeResponse
 from slack_sdk.web import WebClient
 
-from skit_memex.models import image_to_explanation
+from models import *
 
 oai_client = OpenAI()
 
@@ -53,3 +54,51 @@ def main():
     client.socket_mode_request_listeners.append(process)
     client.connect()
     Event().wait()
+
+IMGFLIP_USERNAME = os.environ["IMGFLIP_USERNAME"]
+IMGFLIP_PASSWORD = os.environ["IMGFLIP_PASSWORD"]
+
+text = "Stepping out for an hour"
+
+def generate():
+   meme = meme_recommender(oai_client, text)
+   meme = list(dict(json.loads(meme)).values())[0]
+   print(meme)
+
+   # Search the meme on imgflip and get count of boxes
+
+   headers = {
+       'Content-Type': 'application/x-www-form-urlencoded',
+   }
+
+   data = f'username={IMGFLIP_USERNAME}&password={IMGFLIP_PASSWORD}&query={meme}'
+   response = requests.post('https://api.imgflip.com/search_memes', headers=headers, data=data)
+
+   resp = response.json()['data']['memes'][0]
+
+   template_id = resp['id']
+   box_count = resp['box_count']
+
+   if box_count!=2:
+       generate()
+
+   print(template_id, box_count)
+
+   captions = json.loads(meme_text_generator(oai_client, meme, text, box_count))
+   caption_list = list(dict(captions).values())
+
+   data = {
+       'username': IMGFLIP_USERNAME,
+       'password': IMGFLIP_PASSWORD,
+       'template_id': template_id,
+       'text0': caption_list[0],
+       'text1': caption_list[1]
+   }
+
+   response = requests.post('https://api.imgflip.com/caption_image', headers=headers, data=data)
+   resp = response.json()
+
+   print(resp)
+
+if __name__ == "__main__":
+    generate()
